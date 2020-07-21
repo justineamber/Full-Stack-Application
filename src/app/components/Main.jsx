@@ -8,22 +8,23 @@ import { history } from "../store/history";
 import { ConnectedNavigation } from "./Navigation";
 import { ConnectedTaskDetail } from "./TaskDetail";
 import { Redirect } from "react-router";
+import { ConnectedSignup } from "./Signup";
 
 const RouteGuard = Component => ({ match }) => {
-  console.info("Route guard", match);
-  if (!store.getState().session.authenticated) {
-    return <Redirect to="/" />;
-  }
-  {
-    return <Component match={match} />;
-  }
+  !store.getState().session.authenticated ? (
+    <Redirect to="/" />
+  ) : (
+    <Component match={match} />
+  );
 };
+
 export const Main = () => (
   <Router history={history}>
     <Provider store={store}>
-      <div>
+      <div className="container mt-3">
         <ConnectedNavigation />
         <Route exact path="/" component={ConnectedLogin} />
+        <Route exact path="/signup" component={ConnectedSignup} />
         <Route
           exact
           path="/dashboard"

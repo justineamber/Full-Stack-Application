@@ -4,15 +4,14 @@ import axios from "axios";
 
 import * as mutations from "./mutations";
 import { history } from "./history";
-
 const url = process.env.NODE_ENV == `production` ? `` : "http://localhost:7777";
 
 export function* taskCreationSaga() {
   while (true) {
     const { groupID } = yield take(mutations.REQUEST_TASK_CREATION);
-    const ownerID = `U1`;
+    const ownerID = yield select(state => state.session.id);
     const taskID = uuid();
-    yield put(mutations.createTask(taskID, groupID, ownerID));
+    let mutation = mutations.createTask(taskID, groupID, ownerID);
     const { res } = yield axios.post(url + `/task/new`, {
       task: {
         id: taskID,
@@ -22,6 +21,14 @@ export function* taskCreationSaga() {
         name: "New task"
       }
     });
+    yield put(mutation);
+  }
+}
+
+export function* commentCreationSaga() {
+  while (true) {
+    const comment = yield take(mutations.ADD_TASK_COMMENT);
+    axios.post(url + `/comment/new`, { comment });
   }
 }
 
