@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import React from "react";
 
-import { ConnectedShowUsername } from "./ShowUsername";
+import { ConnectedUsernameDisplay } from "./UsernameDisplay";
 import * as mutations from "../store/mutations";
 
 const Navigation = ({ id, authenticated }) => (
@@ -10,9 +10,10 @@ const Navigation = ({ id, authenticated }) => (
     <Link to="/dashboard">
       <h1>My Application</h1>
     </Link>
+
     {authenticated ? (
       <h4>
-        Welcome, <ConnectedShowUsername id={id} />!
+        Welcome, <ConnectedUsernameDisplay id={id} />!
       </h4>
     ) : null}
   </div>

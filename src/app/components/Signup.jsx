@@ -6,6 +6,7 @@ const SignupComponent = ({ requestCreateUserAccount, authenticated }) => {
   return (
     <div className="card p-3 col-6">
       <h2>Complete the following form to create a new account.</h2>
+
       <form onSubmit={requestCreateUserAccount}>
         <label>
           <span>User Name</span>
@@ -32,7 +33,7 @@ const SignupComponent = ({ requestCreateUserAccount, authenticated }) => {
           <p>A user by that name already exists.</p>
         ) : null}
         <button type="submit" className="form-control mt-2 btn btn-primary">
-          Sign up
+          Sign Up
         </button>
       </form>
     </div>
@@ -43,7 +44,7 @@ const mapStateToProps = state => ({
   authenticated: state.session.authenticated
 });
 
-const mapDispatchToProps = state => ({
+const mapDispatchToProps = dispatch => ({
   requestCreateUserAccount(e) {
     e.preventDefault();
     let username = e.target[`username`].value;

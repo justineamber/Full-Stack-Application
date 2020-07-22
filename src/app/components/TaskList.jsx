@@ -1,9 +1,9 @@
-import React from "react";
 import { connect } from "react-redux";
+import React from "react";
 import { requestTaskCreation } from "../store/mutations";
 import { ConnectedTaskListItem } from "./TaskListItem";
 
-export const TaskList = ({ tasks, name, id, createNewTask }) => (
+export const TaskList = ({ tasks, name, createNewTask, id }) => (
   <div className="card p-2 m-2">
     <h2>{name}</h2>
     <div>
@@ -11,11 +11,10 @@ export const TaskList = ({ tasks, name, id, createNewTask }) => (
         <ConnectedTaskListItem {...task} key={task.id} />
       ))}
     </div>
-
     <div>
       <button
-        onClick={() => createNewTask(id)}
         className="btn btn-primary btn-block mt-2"
+        onClick={() => createNewTask(id)}
       >
         Add New
       </button>

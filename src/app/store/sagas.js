@@ -2,9 +2,10 @@ import { take, put, select } from "redux-saga/effects";
 import uuid from "uuid";
 import axios from "axios";
 
-import * as mutations from "./mutations";
 import { history } from "./history";
-const url = process.env.NODE_ENV == `production` ? `` : "http://localhost:7777";
+import * as mutations from "./mutations";
+const url =
+  process.env.NODE_ENV === "production" ? `` : `http://localhost:7777`;
 
 export function* taskCreationSaga() {
   while (true) {
@@ -17,7 +18,7 @@ export function* taskCreationSaga() {
         id: taskID,
         group: groupID,
         owner: ownerID,
-        IsComplete: false,
+        isComplete: false,
         name: "New task"
       }
     });
@@ -60,17 +61,42 @@ export function* userAuthenticationSaga() {
         username,
         password
       });
-      if (!data) {
-        throw new Error();
-      }
-      console.log("Authenticated", data);
       yield put(mutations.setState(data.state));
+      yield put(
+        mutations.processAuthenticateUser(mutations.AUTHENTICATED, {
+          id: "U1", // todo... get ID from response
+          token: data.token
+        })
+      );
+      history.push(`/dashboard`);
+    } catch (e) {
+      /* catch block handles failed login */
+      yield put(mutations.processAuthenticateUser(mutations.NOT_AUTHENTICATED));
+    }
+  }
+}
+
+export function* userAccountCreationSaga() {
+  while (true) {
+    const { username, password } = yield take(
+      mutations.REQUEST_USER_ACCOUNT_CREATION
+    );
+    try {
+      const { data } = yield axios.post(url + `/user/create`, {
+        username,
+        password
+      });
+      console.log(data);
+
+      yield put(
+        mutations.setState({ ...data.state, session: { id: data.userID } })
+      );
       yield put(mutations.processAuthenticateUser(mutations.AUTHENTICATED));
 
       history.push("/dashboard");
     } catch (e) {
-      console.log("Cant authenticate");
-      yield put(mutations.processAuthenticateUser(mutations.NOT_AUTHENTICATED));
+      console.error("Error", e);
+      yield put(mutations.processAuthenticateUser(mutations.USERNAME_RESERVED));
     }
   }
 }

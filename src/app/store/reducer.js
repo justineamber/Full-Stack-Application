@@ -47,7 +47,7 @@ export const reducer = combineReducers({
     }
     return groups;
   },
-  tasks: (tasks = defaultState.tasks, action) => {
+  tasks(tasks = defaultState.tasks, action) {
     switch (action.type) {
       case mutations.SET_STATE:
         return action.state.tasks;
@@ -60,10 +60,7 @@ export const reducer = combineReducers({
       case mutations.SET_TASK_GROUP:
         return tasks.map(task => {
           return task.id === action.taskID
-            ? {
-                ...task,
-                group: action.groupID
-              }
+            ? { ...task, group: action.groupID }
             : task;
         });
       case mutations.SET_TASK_NAME:
@@ -77,7 +74,7 @@ export const reducer = combineReducers({
           ...tasks,
           {
             id: action.taskID,
-            name: "New task",
+            name: "New Task",
             group: action.groupID,
             owner: action.ownerID,
             isComplete: false

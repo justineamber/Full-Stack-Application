@@ -6,7 +6,7 @@ export const TaskListItem = ({ id, name, commentCount, isComplete }) => (
   <Link to={`/task/${id}`}>
     <div className="card p-2 mt-2">
       <span>
-        {name}({commentCount}) {isComplete ? `✓` : null}
+        {name} ({commentCount}) {isComplete ? `✓` : null}
       </span>
     </div>
   </Link>

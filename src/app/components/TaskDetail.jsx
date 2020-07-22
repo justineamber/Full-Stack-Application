@@ -3,7 +3,7 @@ import uuid from "uuid";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 
-import { ConnectedShowUsername } from "./ShowUsername";
+import { ConnectedUsernameDisplay } from "./UsernameDisplay";
 import {
   setTaskCompletion,
   addTaskComment,
@@ -19,9 +19,11 @@ const TaskDetail = ({
   isComplete,
   sessionID,
   groups,
+
   setTaskCompletion,
-  setTaskName,
-  setTaskGroup
+  addTaskComment,
+  setTaskGroup,
+  setTaskName
 }) => {
   return (
     <div className="card p-3 col-6">
@@ -29,8 +31,8 @@ const TaskDetail = ({
         <div>
           <input
             type="text"
-            onChange={setTaskName}
             value={task.name}
+            onChange={setTaskName}
             className="form-control form-control-lg"
           />
         </div>
@@ -55,26 +57,22 @@ const TaskDetail = ({
           </div>
         ) : (
           <div>
-            <ConnectedShowUsername id={task.owner} /> is the owner of this task.
+            <ConnectedUsernameDisplay id={task.owner} /> is the owner of this
+            task.
           </div>
         )}
       </div>
-
       <div className="mt-2">
         {comments.map(comment => (
           <div key={comment.id}>
-            <ConnectedShowUsername id={comment.owner} /> : {comment.content}
+            <ConnectedUsernameDisplay id={comment.owner} /> : {comment.content}
           </div>
         ))}
       </div>
 
       <form className="form-inline">
         <span className="mr-4">Change Group</span>
-        <select
-          onChange={setTaskGroup}
-          value={task.group}
-          className="form-control"
-        >
+        <select onChange={setTaskGroup} className="form-control">
           {groups.map(group => (
             <option key={group.id} value={group.id}>
               {group.name}
@@ -101,17 +99,18 @@ const TaskDetail = ({
 
       <div>
         <Link to="/dashboard">
-          <div>
-            <button className="btn btn-primary mt-2">Done</button>
-          </div>
+          <button className="btn btn-primary mt-2">Done</button>
         </Link>
       </div>
     </div>
   );
 };
+
 function mapStateToProps(state, ownProps) {
   let id = ownProps.match.params.id;
   let task = state.tasks.find(task => task.id === id);
+  let comments = state.comments.filter(comment => comment.task === id);
+  let isOwner = state.session.id === task.owner;
   let groups = state.groups;
 
   return {
@@ -126,7 +125,7 @@ function mapStateToProps(state, ownProps) {
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
-  let id = ownProps.matc.params.id;
+  let id = ownProps.match.params.id;
   return {
     setTaskCompletion(id, isComplete) {
       dispatch(setTaskCompletion(id, isComplete));
@@ -149,6 +148,7 @@ function mapDispatchToProps(dispatch, ownProps) {
     }
   };
 }
+
 export const ConnectedTaskDetail = connect(
   mapStateToProps,
   mapDispatchToProps

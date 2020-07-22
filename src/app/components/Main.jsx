@@ -1,22 +1,21 @@
 import React from "react";
+import { Route, Router } from "react-router-dom";
 import { Provider } from "react-redux";
-import { store } from "../store";
-import { ConnectedDashboard } from "./Dashboard";
-import { ConnectedLogin } from "./Login";
-import { Router, Route } from "react-router-dom";
-import { history } from "../store/history";
-import { ConnectedNavigation } from "./Navigation";
 import { ConnectedTaskDetail } from "./TaskDetail";
-import { Redirect } from "react-router";
+import { ConnectedDashboard } from "./Dashboard";
+import { ConnectedNavigation } from "./Navigation";
+import { ConnectedLogin } from "./Login";
 import { ConnectedSignup } from "./Signup";
+import { store } from "../store";
+import { history } from "../store/history";
+import { Redirect } from "react-router";
 
-const RouteGuard = Component => ({ match }) => {
+const RouteGuard = Component => ({ match }) =>
   !store.getState().session.authenticated ? (
     <Redirect to="/" />
   ) : (
     <Component match={match} />
   );
-};
 
 export const Main = () => (
   <Router history={history}>
@@ -30,6 +29,7 @@ export const Main = () => (
           path="/dashboard"
           render={RouteGuard(ConnectedDashboard)}
         />
+
         <Route
           exact
           path="/task/:id"
